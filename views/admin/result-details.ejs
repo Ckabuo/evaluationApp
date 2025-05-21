@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result Details - Upperlink</title>
+    <link rel="icon" type="image/png" href="/images/upperlink-small-logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary-color: #FFFFFF;
+            --secondary-color: #f8f9fa;
+            --accent-color: #3641E1;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .sidebar {
+            background-color: var(--primary-color);
+            min-height: 100vh;
+            color: #2c3e50;
+            padding: 20px;
+            position: fixed;
+            width: 100%;
+            max-width: 280px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        
+        .sidebar .nav-link {
+            color: #2c3e50;
+            margin: 5px 0;
+            border-radius: 5px;
+            padding: 10px 15px;
+            white-space: nowrap;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: var(--secondary-color);
+            color: #2c3e50;
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .main-content {
+            padding: 20px;
+            margin-left: 280px;
+            width: calc(100% - 280px);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            padding: 15px 20px;
+        }
+
+        .question-item {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .option {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+        }
+
+        .option.selected {
+            background-color: #e9ecef;
+        }
+
+        .option.selected:not(.correct) {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .option.selected.correct {
+            background-color: #d4edda;
+        }
+
+        .option.correct {
+            border-color: #28a745;
+        }
+
+        .stats-card {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stats-card h3 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .stats-card small {
+            color: #6c757d;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2a33b3;
+            border-color: #2a33b3;
+        }
+        
+        .btn-outline-primary {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+         /* Responsive adjustments */
+         @media (max-width: 991.98px) {
+            .sidebar {
+                max-width: 240px;
+            }
+            .main-content {
+                margin-left: 240px;
+                width: calc(100% - 240px);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .sidebar {
+                max-width: 100%;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .stats-card {
+                margin-bottom: 15px;
+            }
+        }
+
+        /* Add hamburger menu for mobile */
+        .navbar-toggler {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background-color: var(--accent-color);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 767.98px) {
+            .navbar-toggler {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="navbar-toggler" type="button" id="sidebarToggle">
+        <i class="bi bi-list text-white"></i>
+    </button>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar" id="sidebar">
+                <div class="d-flex align-items-center mb-4">
+                    <img src="/images/logo.svg" alt="Upperlink Logo" height="40">
+                </div>
+                <div class="nav-links">
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="/admin/dashboard">
+                            <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                        </a>
+                        <a class="nav-link" href="/admin/applicants">
+                            <i class="bi bi-people me-2"></i> Applicants
+                        </a>
+                        <a class="nav-link" href="/admin/users">
+                            <i class="bi bi-person me-2"></i> Users
+                        </a>
+                        <a class="nav-link active" href="/admin/results">
+                            <i class="bi bi-graph-up me-2"></i> Results
+                        </a>
+                        <a class="nav-link" href="/admin/departments">
+                            <i class="bi bi-building me-2"></i> Departments
+                        </a>
+                        <a class="nav-link" href="/admin/questions">
+                            <i class="bi bi-question-circle me-2"></i> Questions
+                        </a>
+                        <a class="nav-link" href="/admin/quiz-settings">
+                            <i class="bi bi-gear me-2"></i> Quiz Settings
+                        </a>
+                    </nav>
+                </div>
+                <div class="mt-auto pt-4">
+                    <a class="nav-link" href="javascript:void(0)" id="logout-btn">
+                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2>Result Details</h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/admin/results">Results</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Result Details</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="user-info">
+                        <span class="me-2">Welcome, <%= currentUser?.username %></span>
+                    </div>
+                </div>
+
+                <!-- Applicant Info -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Applicant Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Name:</strong> <%= result.applicantId?.name || 'N/A' %></p>
+                                <p class="mb-2"><strong>Department:</strong> <%= result.applicantId?.department || 'N/A' %></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Email:</strong> <%= result.applicantId?.email || 'N/A' %></p>
+                                <p class="mb-2"><strong>Date:</strong> <%= new Date(result.timestamp).toLocaleDateString() %></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Statistics -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3><%= result.totalQuestions || 0 %></h3>
+                            <small>Total Questions</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3><%= result.questions?.filter(q => q.isCorrect).length || 0 %></h3>
+                            <small>Correct Answers</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3><%= (result.questions?.length || 0) - (result.questions?.filter(q => q.isCorrect).length || 0) %></h3>
+                            <small>Wrong Answers</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3><%= Math.round((result.questions?.filter(q => q.isCorrect).length || 0) / (result.totalQuestions || 1) * 100) %>%</h3>
+                            <small>Score</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions and Answers Toggle Button -->
+                <div class="text-center mb-4">
+                    <button class="btn btn-primary" id="toggleQuestions">
+                        <i class="bi bi-eye me-2"></i>Show Questions & Answers
+                    </button>
+                </div>
+
+                <!-- Questions and Answers -->
+                <div class="card" id="questionsSection" style="display: none;">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Questions and Answers</h5>
+                        <% result.questions?.forEach((question, index) => { %>
+                            <div class="question-item mb-4 <%= question.isCorrect ? 'border-success' : 'border-danger' %> border-start ps-3">
+                                <h6 class="mb-2">Question <%= index + 1 %></h6>
+                                <p class="mb-2"><%= question.questionId.text %></p>
+                                <div class="options">
+                                    <% question.questionId.options.forEach(option => { %>
+                                        <div class="option <%= 
+                                            Array.isArray(question.selectedAnswer) 
+                                                ? (question.selectedAnswer.includes(option) ? 'selected' : '') 
+                                                : (option === question.selectedAnswer ? 'selected' : '') 
+                                            %> 
+                                            <%= Array.isArray(question.questionId.correctAnswer) 
+                                                ? (question.questionId.correctAnswer.includes(option) ? 'correct' : '') 
+                                                : (option === question.questionId.correctAnswer ? 'correct' : '') 
+                                            %>">
+                                            <%= option %>
+                                            <% if (Array.isArray(question.selectedAnswer) 
+                                                ? question.selectedAnswer.includes(option) 
+                                                : option === question.selectedAnswer) { %>
+                                                <i class="bi <%= 
+                                                    Array.isArray(question.questionId.correctAnswer)
+                                                        ? (question.questionId.correctAnswer.includes(option) 
+                                                            ? 'bi-check-circle-fill text-success' 
+                                                            : 'bi-x-circle-fill text-danger')
+                                                        : (option === question.questionId.correctAnswer 
+                                                            ? 'bi-check-circle-fill text-success' 
+                                                            : 'bi-x-circle-fill text-danger')
+                                                %>"></i>
+                                            <% } %>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-4">
+                    <a href="/admin/results" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Results
+                    </a>
+                    <button class="btn btn-danger ms-2" id="deleteResult">
+                        <i class="bi bi-trash me-2"></i>Delete Result
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Add sidebar toggle functionality
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            
+            if (window.innerWidth <= 767.98 && 
+                !sidebar.contains(event.target) && 
+                !sidebarToggle.contains(event.target) && 
+                sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+            }
+        });
+        
+        // Toggle Questions and Answers
+        const toggleBtn = document.getElementById('toggleQuestions');
+        const questionsSection = document.getElementById('questionsSection');
+        let isVisible = false;
+
+        toggleBtn.addEventListener('click', () => {
+            isVisible = !isVisible;
+            questionsSection.style.display = isVisible ? 'block' : 'none';
+            toggleBtn.innerHTML = isVisible ? 
+                '<i class="bi bi-eye-slash me-2"></i>Hide Questions & Answers' : 
+                '<i class="bi bi-eye me-2"></i>Show Questions & Answers';
+        });
+
+        // Logout functionality
+        document.getElementById('logout-btn')?.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch('/users/logout', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    window.location.href = '/';
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: data.message || 'Logout failed.',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: err.message || 'An error occurred while logging out.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            }
+        });
+
+        // Delete result
+        document.getElementById('deleteResult')?.addEventListener('click', async () => {
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`/admin/results/<%= result._id %>`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(errorText || 'Failed to delete result');
+                    }
+
+                    const data = await response.json();
+                    
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: data.message || 'Result has been deleted.',
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.href = '/admin/results';
+                    });
+                } catch (error) {
+                    console.error('Error deleting result:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: error.message || 'Failed to delete result. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,245 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    pointer-events: auto;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Reusable Button Styles */
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: rgba(0, 0, 255, 0.7);
+}
+
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+.navbar img {
+    width: 200px;
+    height: auto;
+}
+
+#Applicant a {
+    font-size: 20px;
+    text-decoration: none;
+    color: grey;
+}
+
+#Applicant a:hover {
+    cursor: default;
+}
+
+/* Timer Styles */
+#time span {
+    font-size: 20px;
+    border: 1.5px solid #3641E1;
+    border-radius: 28px;
+    background-color: white;
+    color: #3641E1;
+    width: 120px;
+    height: 40px;
+    margin-top: 10px;
+    padding: 5px 10px;
+    text-align: center;
+    line-height: 30px;
+    display: block;
+    margin-left: auto;
+}
+
+#time button:hover {
+    cursor: default;
+}
+
+/* Main Content Styles */
+.container {
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.question-page {
+    /*margin-top: 30px;*/
+    display: flex;
+    justify-content: center;
+}
+
+.page {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 30px;
+    margin: 10px;
+    width: 100%;
+    /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
+}
+
+.page h1 {
+    font-family: Cochin, serif;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.page p {
+    color: grey;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.options {
+    margin-top: 20px;
+}
+
+.options label {
+    margin-left: 5px;
+}
+
+/* Input Styles (Checkbox and Radio) */
+input[type="checkbox"],
+input[type="radio"] {
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+/* Button Section Styles */
+.button-section {
+    display: flex;
+    justify-content: space-between;
+    /*margin-top: 30px;*/
+}
+
+.button-section button {
+    width: 120px;
+    height: 40px;
+    font-size: 16px;
+    background-color: rgba(0, 0, 255, 0.7); /* Blue button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.button-section button:hover {
+    background-color: rgba(0, 0, 255, 0.9);
+}
+
+/* Navigation Section Styles */
+.Navigation-section {
+    /*margin-top: 20px;*/
+    display: flex;
+    /* justify-content: flex-start; */
+    justify-content: center
+    flex-wrap: wrap;
+    gap: 5px;
+    padding-left: 10px;
+}
+
+.Navigation-section button {
+    width: 38px;
+    height: 38px;
+    background-color: lightgrey;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 0;
+}
+
+.Navigation-section button:hover {
+    background-color: rgba(0, 0, 255, 0.9);
+    color: white;
+}
+
+.Navigation-section button.active {
+    background-color: rgba(0, 0, 255, 0.9);
+    color: white;
+}
+
+.Navigation-section button.answered {
+    background-color: #28a745;
+    color: white;
+    border: 1px solid #28a745;
+}
+
+
+/* Submit Button Styles */
+.Submit-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.Submit-button button {
+    width: 150px;
+    height: 50px;
+    font-size: 18px;
+    background-color: rgba(0, 0, 255, 0.9);
+    color: white;
+}
+
+.Submit-button button:hover {
+    background-color: rgba(0, 0, 255, 0.7);
+}
+
+.hidden {
+    display: none;
+}
+
+.timer-warning {
+    color: #FF0000FF !important;
+}
+
+.timer-warning.blink {
+    animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+    0% { border-color: #FF0000FF; }
+    50% { border-color: transparent; }
+    100% { border-color: #FF0000FF; }
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    #time button {
+        position: static;
+        margin-top: 10px;
+    }
+
+    .question-page {
+        flex-direction: column;
+    }
+
+    .page {
+        width: 95%;
+        margin: 10px auto;
+        padding: 20px;
+    }
+
+    .Navigation-section {
+        justify-content: center;
+    }
+}

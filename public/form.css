@@ -1,0 +1,174 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: "Inter", sans-serif;
+}
+
+.navbar img{
+    width: 200px;
+}
+
+#Applicant a{
+    font-size: 20px;
+    text-decoration: none;
+    color: grey;
+    font-size: x-large;
+}
+
+.navbar{
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+    padding: 15px;
+    margin-left: 50px;
+    margin-right: 60px;
+    height: 30px;
+}
+
+.container {
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    align-items: center;
+}
+
+.container h1{
+    padding: 5px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 20px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.74);
+}
+
+.pricing-cards {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.subject{
+    margin-top: -50px;
+}
+
+#app{
+    font-size: 25px;
+
+}
+
+.card {
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgba(0, 0, 0, 0.384);
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    padding: 60px;
+    margin: 5px;
+    width: 50%;
+}
+
+input{
+    width: 90%;
+    height: 40px;
+    border: 1px solid rgba(0, 0, 0, 0.267);
+    border-radius: 5px;
+    padding-left: 40px;
+    font-size: 17px;
+    margin-top: 7px;
+}
+
+.card img{
+    width: 16px;
+    display: flex;
+    flex-direction: column;
+
+}
+
+button{
+    width: 96%;
+    height: 50px;
+    border: none;
+    border-radius: 9px;
+    background-color: blue;
+    color: white;
+    font-size: 15px;
+}
+
+button:hover{
+    border: 1px solid blue;
+    cursor: pointer;
+}
+
+#User{
+    margin-top: -30px;
+    margin-left: 10px;
+}
+
+#envelope{
+    margin-top: -30px;
+    margin-left: 10px;
+}
+
+#phone{
+    margin-top: -30px;
+    margin-left: 10px;
+}
+
+#Frontend-Developer{
+    width: 15px;
+    margin-right: 6px;
+    margin-top: -2px;
+}
+
+#Product-Designer{
+    width: 15px;
+    margin-right: 6px;
+    margin-top: -2px;
+}
+
+.list-items{
+    display: flex;
+    align-items: center;
+}
+
+.radio{
+    display: flex;
+    align-items: center;
+    margin-bottom: 19px;
+    justify-content: space-between;
+}
+
+/*#Department{*/
+/*    margin-bottom: 20px;*/
+/*}*/
+
+.userlogo{
+    margin-top: -5px;
+}
+
+.card .submit{
+    background-color: rgb(32, 32, 252);
+    width: 90%;
+    margin-left: 15px;
+    padding-left: 0px;
+    color: white;
+    border-color: rgb(32, 32, 252);
+
+}
+
+.card .submit:hover{
+
+    cursor: pointer;
+}
+
+.errorMessage {
+    color: #dc3545;
+    text-align: center;
+}
+
+.my-swal-icon {
+    font-weight: bold;
+}
+
+.my-swal-popup {
+    border-radius: 24px;
+    border: 1px solid #ABADC4;
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upperlink</title>
+    <link rel="stylesheet" href="/score.css">
+    <script src="https://kit.fontawesome.com/0625b58520.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Check for 401 error, and redirect to login
+        window.addEventListener('fetchError', (event) => {
+            if (event.detail.status === 401) {
+                window.location.href = '/';
+            }
+        });
+    </script>
+    <link rel="icon" href="/images/upperlink-small-logo.png">
+</head>
+<body>
+<div class="navbar">
+    <div class="navbar-img">
+        <img src="/images/logox.png" alt="Upperlink Logo" class="navbar-img">
+    </div>
+    <div>
+        <a href="#"><i class="fa-solid fa-user"></i> Applicant</a>
+    </div>
+</div>
+<hr>
+<br><br>
+<div class="box">
+    <div class="container-box">
+        <i class="fa-regular fa-circle-check fa-2xl icon" style="color: #3641E1; font-size: 70px;"></i><br>
+        <h2>Test Completed!</h2><br>
+        <p>You have successfully completed the test.</p>
+<!--        <p>Your score is <b><%= score %></b></p>-->
+        <p>Your score is <b><%= typeof score !== 'undefined' ? score : 0 %></b></p>
+        <p>Thank you for your participation, and good luck! </p><br>
+        <a class="homepage" id="logout-btn" href="javascript:void(0)">Return to homepage</a>
+    </div>
+</div>
+
+<script>
+    document.getElementById('logout-btn')?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch('/users/logout', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                window.location.href = '/';
+
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data.message || 'Logout failed.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+
+            }
+        } catch (err) {
+            Swal.fire({
+                title: 'Error!',
+                text: err.message || 'An error occurred while logging out.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
+
+        }
+    });
+</script>
+
+</body>
+</html>

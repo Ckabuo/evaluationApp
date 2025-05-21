@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Settings - Upperlink</title>
+    <link rel="icon" type="image/png" href="/images/upperlink-small-logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary-color: #FFFFFF;
+            --secondary-color: #f8f9fa;
+            --accent-color: #3641E1;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .sidebar {
+            background-color: var(--primary-color);
+            min-height: 100vh;
+            color: #2c3e50;
+            padding: 20px;
+            position: fixed;
+            width: 100%;
+            max-width: 280px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        
+        .sidebar .nav-link {
+            color: #2c3e50;
+            margin: 5px 0;
+            border-radius: 5px;
+            padding: 10px 15px;
+            white-space: nowrap;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: var(--secondary-color);
+            color: #2c3e50;
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .nav-links {
+            flex: 1;
+        }
+        
+        .main-content {
+            padding: 20px;
+            margin-left: 280px;
+            width: calc(100% - 280px);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            padding: 15px 20px;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        .form-text {
+            color: #6c757d;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2a33b3;
+            border-color: #2a33b3;
+        }
+        
+        .btn-outline-primary {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                max-width: 240px;
+            }
+            .main-content {
+                margin-left: 240px;
+                width: calc(100% - 240px);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .sidebar {
+                max-width: 100%;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .stats-card {
+                margin-bottom: 15px;
+            }
+        }
+
+        /* Add hamburger menu for mobile */
+        .navbar-toggler {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background-color: var(--accent-color);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 767.98px) {
+            .navbar-toggler {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="navbar-toggler" type="button" id="sidebarToggle">
+        <i class="bi bi-list text-white"></i>
+    </button>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar" id="sidebar">
+                <div class="d-flex align-items-center mb-4">
+                    <img src="/images/logo.svg" alt="Upperlink Logo" height="40">
+                </div>
+                <div class="nav-links">
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="/admin/dashboard">
+                            <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                        </a>
+                        <a class="nav-link" href="/admin/applicants">
+                            <i class="bi bi-people me-2"></i> Applicants
+                        </a>
+                        <a class="nav-link" href="/admin/users">
+                            <i class="bi bi-person me-2"></i> Users
+                        </a>
+                        <a class="nav-link" href="/admin/results">
+                            <i class="bi bi-graph-up me-2"></i> Results
+                        </a>
+                        <a class="nav-link" href="/admin/departments">
+                            <i class="bi bi-building me-2"></i> Departments
+                        </a>
+                        <a class="nav-link" href="/admin/questions">
+                            <i class="bi bi-question-circle me-2"></i> Questions
+                        </a>
+                        <a class="nav-link active" href="/admin/quiz-settings">
+                            <i class="bi bi-gear me-2"></i> Quiz Settings
+                        </a>
+                    </nav>
+                </div>
+                <div class="mt-auto pt-4">
+                    <a class="nav-link" href="javascript:void(0)" id="logout-btn">
+                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Quiz Settings</h2>
+                    <div class="user-info">
+                        <span class="me-2">Welcome, <%= currentUser?.username %></span>
+                    </div>
+                </div>
+
+                <!-- Settings Form -->
+                <div class="card">
+                    <div class="card-body">
+                        <form id="quizSettingsForm">
+                            <div class="mb-4">
+                                <label for="timeLimit" class="form-label">Time Limit (minutes)</label>
+                                <input type="number" class="form-control" id="timeLimit" name="timeLimit" 
+                                       value="<%= settings?.timeLimit || 30 %>" min="1" max="60" required>
+                                <div class="form-text">Set the time limit for the quiz (1-60 minutes)</div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="questionCount" class="form-label">Number of Questions</label>
+                                <input type="number" class="form-control" id="questionCount" name="questionCount" 
+                                       value="<%= settings?.questionCount || 10 %>" min="1" max="<%= totalQuestions %>" required>
+                                <div class="form-text">Set the number of questions to be shown in the quiz (1-<%= totalQuestions %> questions)</div>
+                                <div class="invalid-feedback" id="questionCountError"></div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save me-2"></i>Save Settings
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Add sidebar toggle functionality
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            
+            if (window.innerWidth <= 767.98 && 
+                !sidebar.contains(event.target) && 
+                !sidebarToggle.contains(event.target) && 
+                sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logout-btn')?.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch('/users/logout', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    window.location.href = '/';
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: data.message || 'Logout failed.',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: err.message || 'An error occurred while logging out.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            }
+        });
+
+        // Question count validation
+        const questionCountInput = document.getElementById('questionCount');
+        const questionCountError = document.getElementById('questionCountError');
+        const totalQuestions = <%= totalQuestions %>;
+
+        questionCountInput?.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            if (value > totalQuestions) {
+                this.setCustomValidity(`Only ${totalQuestions} questions are available`);
+                questionCountError.textContent = `Warning: Only ${totalQuestions} questions are available in the database`;
+                questionCountError.style.display = 'block';
+            } else {
+                this.setCustomValidity('');
+                questionCountError.style.display = 'none';
+            }
+        });
+
+        // Save quiz settings
+        document.getElementById('quizSettingsForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const timeLimit = parseInt(document.getElementById('timeLimit').value);
+            const questionCount = parseInt(document.getElementById('questionCount').value);
+
+            if (questionCount > totalQuestions) {
+                Swal.fire({
+                    title: 'Warning!',
+                    text: `Only ${totalQuestions} questions are available in the database. Please adjust the question count.`,
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            try {
+                const response = await fetch('/admin/quiz-settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ timeLimit, questionCount })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: data.message || 'Quiz settings updated successfully',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    throw new Error(data.message || 'Failed to update quiz settings');
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: error.message || 'Failed to update quiz settings. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

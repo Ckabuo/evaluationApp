@@ -1,0 +1,133 @@
+* {
+    background-color: white;
+    font-family: "inter",sans-serif;
+}
+
+.navbar img {
+    width: 200px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-top: 20px;
+}
+
+.navbar p{
+    font-size: 20px;
+    font-weight: bold;
+    justify-items: right;
+    text-align: right;
+    color: rgb(180, 179, 179);
+
+}
+
+div a{
+    text-decoration: none;
+    color: grey;
+    font-size: x-large;
+}
+
+div i{
+    color: grey;
+    font-size: x-large;
+}
+
+hr {
+    width: 100%;
+    line-height: -0.2;
+    color: rgb(180, 179, 179);
+}
+
+.box {
+    display: flex;
+    align-items: center;
+    height: 50vh;
+    border: 0.5px solid #A8A8A8;
+    border-radius: 24px;
+    justify-content: center;
+    padding: 20px;
+    margin: auto;
+    max-width: 80vw;
+    width: 30vw;
+    flex: 1;
+    background-color: white;
+    text-align: center;
+    align-items: center;
+    font-family: "inter",sans-serif;
+}
+
+/*hr{*/
+/*    margin-top: 20px;*/
+/*    margin-bottom: 5px;*/
+/*    height: 0.0001%;*/
+/*    color: #969393;*/
+/*    background-color: #969393;*/
+/*    width: 100%;*/
+/*}*/
+/*.box{*/
+/*    display: flex;*/
+/*    border: 0.5px solid white;*/
+/*    border-radius: 15px 20px;*/
+/*    background-color: white;*/
+/*    box-shadow: 0 5px 10px rgba(117, 116, 116, 0.89);*/
+/*    justify-content: center;*/
+/*    padding: 30px;*/
+/*    max-width: 90%;*/
+/*    margin: auto;*/
+/*    margin-top: -10px;*/
+/*    flex-direction: column;*/
+/*    width: 30%;*/
+/*    height: 30px;*/
+/*    flex: 1;*/
+/*    flex-direction: column;*/
+/*    text-align: center;*/
+/*    align-items: center;*/
+/*    line-height: 0.6;*/
+/*    font-family: "Inter", sans-serif;*/
+/*    font-size: large;*/
+/*}*/
+.container-box {
+    margin-top: 5px;
+}
+.inter-uniquifier {
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 10;
+    font-size: 14px;
+    font-style: normal;
+}
+.container-box p{
+    color: rgb(61, 61, 61);
+    word-wrap: break-word;
+    white-space: normal;
+}
+.homepage {
+    width: auto;
+    font-size: medium;
+    padding: 15px 20px;
+    text-align: center;
+    background-color: #001aff;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    transition: 0.3s ease;
+}
+.homepage button{
+    background-color: #3641E1;
+}
+
+@media (max-width: 1000px) {
+    .box {
+        width: 90%;
+        padding: 10px;
+    }
+
+    .button {
+        width: 100%; /* Makes sure button doesn’t break */
+    }
+}

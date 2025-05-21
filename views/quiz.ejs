@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upperlink Quiz</title>
+    <link rel="stylesheet" href="/quiz.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/0625b58520.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="shortcut icon" href="/images/upperlink-small-logo.png" type="image/x-icon">
+</head>
+<body>
+<div class="navbar">
+    <div><img src="/images/logox.png" alt="Upperlink Logo"></div>
+    <div id="Applicant">
+        <a href="javascript:void(0);"><i class="fa-solid fa-user"></i> Applicant</a>
+    </div>
+</div>
+<hr>
+<div class="container">
+    <div id="time"><span id="timer-btn">05:00</span></div>
+    <div class="question-page">
+        <div class="page">
+            <div id="quiz-container">
+                <% if (typeof questions !== 'undefined' && questions.length > 0) { %>
+                    <% questions.forEach((question, index) => { %>
+                        <div class="question" data-question-id="<%= question._id %>" data-question-index="<%= index %>" style="display: <%= index === 0 ? 'block' : 'none' %>">
+                            <p id="select">
+                                <% if (question.type === 'checkbox') { %>
+                                    Select the correct options from the following
+                                <% } else if (question.type === 'radio') { %>
+                                    Select the correct option from the following
+                                <% } %>
+                            </p>
+                            <h1><%= question.text %></h1>
+                            <div class="options">
+                                <% question.options.forEach((option, optionIndex) => { %>
+                                    <% if (question.type === 'checkbox') { %>
+                                        <input
+                                                type="checkbox"
+                                                id="checkbox-<%= index %>-<%= optionIndex %>"
+                                                name="question-<%= index %>"
+                                                value="<%= option %>"
+                                        >
+                                        <label for="checkbox-<%= index %>-<%= optionIndex %>"><%= option %></label><br><br>
+                                    <% } else if (question.type === 'radio') { %>
+                                        <input
+                                                type="radio"
+                                                id="radio-<%= index %>-<%= optionIndex %>"
+                                                name="question-<%= index %>"
+                                                value="<%= option %>"
+                                        >
+                                        <label for="radio-<%= index %>-<%= optionIndex %>"><%= option %></label><br><br>
+                                    <% } %>
+                                <% }); %>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>No questions available.</p>
+                <% } %>
+            </div>
+            <div class="button-section">
+                <button id="prev-btn" class="<%= typeof questions !== 'undefined' && questions.length > 0 ? '' : 'hidden' %>"> < Previous </button>
+                <button id="next-btn" class="<%= typeof questions !== 'undefined' && questions.length > 0 ? '' : 'hidden' %>"> Next ></button>
+            </div>
+        </div>
+    </div>
+    <div class="Navigation-section <%= typeof questions !== 'undefined' && questions.length > 0 ? '' : 'hidden' %>">
+        <% if (typeof questions !== 'undefined' && questions.length > 0) { %>
+            <% questions.forEach((_, index) => { %>
+                <button data-question-index="<%= index %>"><%= index + 1 %></button>
+            <% }); %>
+        <% } %>
+    </div>
+    <div class="Submit-button <%= typeof questions !== 'undefined' && questions.length > 0 ? 'hidden' : 'hidden' %>">
+        <div></div>
+        <div><button id="submit-quiz">Submit</button></div>
+    </div>
+</div>
+
+<script>
+<!-- Buttons Script-->
+    document.addEventListener('DOMContentLoaded', function () {
+        const questions = document.querySelectorAll('.question');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const navButtons = document.querySelectorAll('.Navigation-section button');
+        const submitSection = document.querySelector('.Submit-button');
+
+        let currentIndex = 0;
+
+        function showQuestion(index) {
+            questions.forEach((q, i) => {
+                q.style.display = i === index ? 'block' : 'none';
+            });
+
+            navButtons.forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
+            });
+
+            // Toggle button visibility
+            prevBtn.disabled = index === 0;
+            nextBtn.style.display = index === questions.length - 1 ? 'none' : 'inline-block';
+            submitSection.classList.toggle('hidden', index !== questions.length - 1);
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentIndex < questions.length - 1) {
+                currentIndex++;
+                showQuestion(currentIndex);
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                showQuestion(currentIndex);
+            }
+        });
+
+        navButtons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const index = parseInt(btn.dataset.questionIndex);
+                currentIndex = index;
+                showQuestion(currentIndex);
+            });
+        });
+
+        // Initial load
+        showQuestion(currentIndex);
+    });
+
+    // Timer Script
+document.addEventListener('DOMContentLoaded', function () {
+    const timerBtn = document.getElementById('timer-btn');
+    let timeLeft = <%= timeLimit %> * 60; // Convert minutes to seconds
+
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerBtn.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        // Add warning class when 5 minutes or less remain
+        if (timeLeft <= 300) { // 5 minutes = 300 seconds
+            timerBtn.classList.add('timer-warning');
+            timerBtn.style.color = '#FF0000FF';
+        }
+
+        // Add blinking effect when 30 seconds or less remain
+        if (timeLeft <= 30) {
+            timerBtn.classList.add('blink');
+            // Remove the border color to let the animation handle it
+            timerBtn.style.borderColor = 'transparent';
+        } else {
+            timerBtn.classList.remove('blink');
+            if (timeLeft <= 300) {
+                timerBtn.style.borderColor = '#FF0000FF';
+            }
+        }
+
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            // Add back the red border before submitting
+            timerBtn.style.borderColor = '#FF0000FF';
+            // Submit the quiz when time runs out
+            const submitButton = document.getElementById('submit-quiz');
+            if (submitButton) {
+                submitButton.click();
+            }
+        }
+        timeLeft--;
+    }
+
+    updateTimer();
+
+    const timer = setInterval(() => {
+        updateTimer();
+    }, 1000);
+});
+
+    // Answered and Unanswered question Script
+document.addEventListener("DOMContentLoaded", function () {
+    const questionDivs = document.querySelectorAll('.question');
+
+    questionDivs.forEach((questionDiv, index) => {
+        const inputs = questionDiv.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+
+        inputs.forEach(input => {
+            input.addEventListener('change', () => {
+                checkIfAnswered(index);
+            });
+        });
+    });
+
+    function checkIfAnswered(index) {
+        const questionDiv = document.querySelector(`.question[data-question-index="${index}"]`);
+        const inputs = questionDiv.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+        const navBtn = document.querySelector(`.Navigation-section button[data-question-index="${index}"]`);
+
+        let isAnswered = false;
+        inputs.forEach(input => {
+            if (input.checked) {
+                isAnswered = true;
+            }
+        });
+
+        if (isAnswered) {
+            navBtn.classList.add('answered');
+        } else {
+            navBtn.classList.remove('answered');
+        }
+    }
+});
+
+    // Submit quiz
+document.getElementById('submit-quiz').addEventListener('click', async () => {
+    // Disable the submit button to prevent multiple clicks
+    const submitButton = document.getElementById('submit-quiz');
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Submitting...'; // Optional: Change text to indicate submission in progress
+    }
+
+    const allQuestions = document.querySelectorAll('.question');
+    const answers = [];
+
+    allQuestions.forEach(question => {
+    const questionId = question.getAttribute('data-question-id');
+    const radioInputs = question.querySelectorAll(`input[type="radio"]`);
+    const checkboxInputs = question.querySelectorAll(`input[type="checkbox"]`);
+
+    let selectedAnswer;
+
+    if (radioInputs.length > 0) {
+    const selectedRadio = [...radioInputs].find(input => input.checked);
+    if (selectedRadio) {
+    selectedAnswer = selectedRadio.value;
+}
+}
+
+    if (checkboxInputs.length > 0) {
+    const selectedCheckboxes = [...checkboxInputs].filter(input => input.checked).map(input => input.value);
+    if (selectedCheckboxes.length > 0) {
+    selectedAnswer = selectedCheckboxes;
+}
+}
+
+    if (selectedAnswer !== undefined) {
+    answers.push({ questionId, selectedAnswer });
+}
+});
+
+    try {
+    const response = await fetch('/quiz/submit', {
+    method: 'POST',
+    headers: {
+    'Content-Type': 'application/json'
+},
+    body: JSON.stringify({ answers })
+});
+
+    const data = await response.json();
+
+    if (response.ok) {
+        window.location.href = '/score';
+    } else {
+        Swal.fire({
+            title: 'Error!',
+            text: data.message || 'Quiz submission failed.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+    }
+} catch (err) {
+        Swal.fire({
+            title: 'Error!',
+            text: err.message || 'An error occurred!',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+    // Re-enable button on error
+    const submitButton = document.getElementById('submit-quiz');
+    if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit';
+    }
+}
+});
+
+</script>
+
+</body>
+</html>
+

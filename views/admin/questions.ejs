@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questions Management - Upperlink</title>
+    <link rel="icon" type="image/png" href="/images/upperlink-small-logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary-color: #FFFFFF;
+            --secondary-color: #f8f9fa;
+            --accent-color: #3641E1;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .sidebar {
+            background-color: var(--primary-color);
+            min-height: 100vh;
+            color: #2c3e50;
+            padding: 20px;
+            position: fixed;
+            width: 100%;
+            max-width: 280px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        
+        .sidebar .nav-link {
+            color: #2c3e50;
+            margin: 5px 0;
+            border-radius: 5px;
+            padding: 10px 15px;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: var(--secondary-color);
+            color: #2c3e50;
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .nav-links {
+            flex: 1;
+        }
+        
+        .main-content {
+            padding: 20px;
+            margin-left: 280px;
+            width: calc(100% - 280px);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            padding: 15px 20px;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            border-top: none;
+            font-weight: 600;
+        }
+
+        .search-box {
+            max-width: 300px;
+        }
+
+        .option-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .option-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .option-list li:last-child {
+            border-bottom: none;
+        }
+
+        .correct-option {
+            color: #198754;
+            font-weight: 500;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                max-width: 240px;
+            }
+            .main-content {
+                margin-left: 240px;
+                width: calc(100% - 240px);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .sidebar {
+                max-width: 100%;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .stats-card {
+                margin-bottom: 15px;
+            }
+        }
+
+        /* Add hamburger menu for mobile */
+        .navbar-toggler {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background-color: var(--accent-color);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 767.98px) {
+            .navbar-toggler {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="navbar-toggler" type="button" id="sidebarToggle">
+        <i class="bi bi-list text-white"></i>
+    </button>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar" id="sidebar">
+                <div class="d-flex align-items-center mb-4">
+                    <img src="/images/logo.svg" alt="Upperlink Logo" height="40">
+                </div>
+                <div class="nav-links">
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="/admin/dashboard">
+                            <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                        </a>
+                        <a class="nav-link" href="/admin/applicants">
+                            <i class="bi bi-people me-2"></i> Applicants
+                        </a>
+                        <a class="nav-link" href="/admin/users">
+                            <i class="bi bi-person me-2"></i> Users
+                        </a>
+                        <a class="nav-link" href="/admin/results">
+                            <i class="bi bi-graph-up me-2"></i> Results
+                        </a>
+                        <a class="nav-link" href="/admin/departments">
+                            <i class="bi bi-building me-2"></i> Departments
+                        </a>
+                        <a class="nav-link active" href="/admin/questions">
+                            <i class="bi bi-question-circle me-2"></i> Questions
+                        </a>
+                        <a class="nav-link" href="/admin/quiz-settings">
+                            <i class="bi bi-gear me-2"></i> Quiz Settings
+                        </a>
+                    </nav>
+                </div>
+                <div class="mt-auto pt-4">
+                    <a class="nav-link" href="javascript:void(0)" id="logout-btn">
+                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Questions Management</h2>
+                    <div class="d-flex align-items-center">
+                        <div class="user-info me-3">
+                            <span>Welcome, <%= currentUser?.username %></span>
+                        </div>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
+                            <i class="bi bi-plus-lg me-2"></i>Add Question
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="input-group search-box">
+                                    <input type="text" class="form-control" placeholder="Search questions..." id="searchInput">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="typeFilter">
+                                    <option value="">All Types</option>
+                                    <option value="radio">Single Choice</option>
+                                    <option value="checkbox">Multiple Choice</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="categoryFilter">
+                                    <option value="">All Categories</option>
+                                    <option value="frontend">Frontend</option>
+                                    <option value="backend">Backend</option>
+                                    <option value="design">Design</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions Table -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">All Questions</h5>
+                        <span class="badge bg-primary"><%= questions.length %> Total</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Question</th>
+                                        <th>Type</th>
+                                        <th>Category</th>
+                                        <th>Options</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="questionsTableBody">
+                                    <% questions.forEach(question => { %>
+                                        <tr>
+                                            <td><%= question.text %></td>
+                                            <td>
+                                                <span class="badge bg-<%= question.type === 'radio' ? 'info' : 'warning' %>">
+                                                    <%= question.type === 'radio' ? 'Single Choice' : 'Multiple Choice' %>
+                                                </span>
+                                            </td>
+                                            <td><%= question.category %></td>
+                                            <td>
+                                                <ul class="option-list">
+                                                    <% question.options.forEach(option => { %>
+                                                        <li class="<%= question.correctAnswer.includes(option) ? 'correct-option' : '' %>">
+                                                            <%= option %>
+                                                            <% if (question.correctAnswer.includes(option)) { %>
+                                                                <i class="bi bi-check-circle-fill text-success ms-2"></i>
+                                                            <% } %>
+                                                        </li>
+                                                    <% }); %>
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary edit-question" data-id="<%= question._id %>">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger delete-question" data-id="<%= question._id %>">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Question Modal -->
+    <div class="modal fade" id="addQuestionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Question</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addQuestionForm">
+                        <div class="mb-3">
+                            <label class="form-label">Question Text</label>
+                            <textarea class="form-control" name="text" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Question Type</label>
+                            <select class="form-select" name="type" required>
+                                <option value="radio">Single Choice</option>
+                                <option value="checkbox">Multiple Choice</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" name="category" required>
+                                <option value="frontend">Frontend</option>
+                                <option value="backend">Backend</option>
+                                <option value="design">Design</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Options</label>
+                            <div id="optionsContainer">
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" name="options[]" required>
+                                    <button type="button" class="btn btn-outline-danger remove-option">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" name="options[]" required>
+                                    <button type="button" class="btn btn-outline-danger remove-option">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="addOption">
+                                <i class="bi bi-plus-lg me-2"></i>Add Option
+                            </button>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Correct Answer(s)</label>
+                            <div id="correctAnswersContainer">
+                                <!-- Will be populated dynamically based on type -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveQuestion">Save Question</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Question Modal -->
+    <div class="modal fade" id="editQuestionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Question</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editQuestionForm">
+                        <input type="hidden" name="id">
+                        <div class="mb-3">
+                            <label class="form-label">Question Text</label>
+                            <textarea class="form-control" name="text" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Question Type</label>
+                            <select class="form-select" name="type" required>
+                                <option value="radio">Single Choice</option>
+                                <option value="checkbox">Multiple Choice</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" name="category" required>
+                                <option value="frontend">Frontend</option>
+                                <option value="backend">Backend</option>
+                                <option value="design">Design</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Options</label>
+                            <div id="editOptionsContainer">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="editAddOption">
+                                <i class="bi bi-plus-lg me-2"></i>Add Option
+                            </button>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Correct Answer(s)</label>
+                            <div id="editCorrectAnswersContainer">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="updateQuestion">Update Question</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Add sidebar toggle functionality
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            
+            if (window.innerWidth <= 767.98 && 
+                !sidebar.contains(event.target) && 
+                !sidebarToggle.contains(event.target) && 
+                sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+            }
+        });
+        
+        // Initialize modals
+        const addQuestionModal = new bootstrap.Modal(document.getElementById('addQuestionModal'));
+        const editQuestionModal = new bootstrap.Modal(document.getElementById('editQuestionModal'));
+
+        // Logout functionality
+        document.getElementById('logout-btn')?.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch('/users/logout', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    window.location.href = '/';
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: data.message || 'Logout failed.',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: err.message || 'An error occurred while logging out.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            }
+        });
+
+        // Add option button functionality
+        document.getElementById('addOption')?.addEventListener('click', () => {
+            const container = document.getElementById('optionsContainer');
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'input-group mb-2';
+            optionDiv.innerHTML = `
+                <input type="text" class="form-control" name="options[]" required>
+                <button type="button" class="btn btn-outline-danger remove-option">
+                    <i class="bi bi-trash"></i>
+                </button>
+            `;
+            container.appendChild(optionDiv);
+            updateCorrectAnswersUI();
+        });
+
+        // Remove option button functionality
+        document.getElementById('optionsContainer')?.addEventListener('click', (e) => {
+            if (e.target.closest('.remove-option')) {
+                const optionDiv = e.target.closest('.input-group');
+                if (document.querySelectorAll('#optionsContainer .input-group').length > 2) {
+                    optionDiv.remove();
+                    updateCorrectAnswersUI();
+                } else {
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'A question must have at least 2 options.',
+                        icon: 'warning',
+                        confirmButtonText: 'OK',
+                    });
+                }
+            }
+        });
+
+        // Update correct answers UI based on question type
+        function updateCorrectAnswersUI() {
+            const type = document.querySelector('select[name="type"]').value;
+            const container = document.getElementById('correctAnswersContainer');
+            const options = Array.from(document.querySelectorAll('input[name="options[]"]')).map(input => input.value);
+            
+            container.innerHTML = '';
+            if (type === 'radio') {
+                options.forEach(option => {
+                    container.innerHTML += `
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="correctAnswer" value="${option}" required>
+                            <label class="form-check-label">${option}</label>
+                        </div>
+                    `;
+                });
+            } else {
+                options.forEach(option => {
+                    container.innerHTML += `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="correctAnswer[]" value="${option}">
+                            <label class="form-check-label">${option}</label>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        // Update correct answers UI when type changes
+        document.querySelector('select[name="type"]')?.addEventListener('change', updateCorrectAnswersUI);
+
+        // Save new question
+        document.getElementById('saveQuestion')?.addEventListener('click', async () => {
+            const form = document.getElementById('addQuestionForm');
+            const formData = new FormData(form);
+            const type = formData.get('type');
+            
+            const questionData = {
+                text: formData.get('text'),
+                type: type,
+                category: formData.get('category'),
+                options: formData.getAll('options[]'),
+                correctAnswer: type === 'radio' ? 
+                    formData.get('correctAnswer') : 
+                    formData.getAll('correctAnswer[]')
+            };
+
+            try {
+                const response = await fetch('/admin/questions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(questionData)
+                });
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Question has been added successfully.',
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    throw new Error('Failed to add question');
+                }
+            } catch (error) {
+                console.error('Error adding question:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to add question. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            }
+        });
+
+        // Edit question
+        document.querySelectorAll('.edit-question').forEach(button => {
+            button.addEventListener('click', async () => {
+                const questionId = button.dataset.id;
+                try {
+                    const response = await fetch(`/admin/questions/${questionId}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch question details');
+                    }
+                    const data = await response.json();
+                    const question = data.question;
+                    
+                    // Populate form
+                    const form = document.getElementById('editQuestionForm');
+                    form.querySelector('[name="id"]').value = question._id;
+                    form.querySelector('[name="text"]').value = question.text;
+                    form.querySelector('[name="type"]').value = question.type;
+                    form.querySelector('[name="category"]').value = question.category;
+                    
+                    // Populate options
+                    const optionsContainer = document.getElementById('editOptionsContainer');
+                    optionsContainer.innerHTML = '';
+                    question.options.forEach(option => {
+                        optionsContainer.innerHTML += `
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" name="options[]" value="${option}" required>
+                                <button type="button" class="btn btn-outline-danger remove-option">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        `;
+                    });
+                    
+                    // Update correct answers UI
+                    updateEditCorrectAnswersUI();
+                    
+                    // Set correct answers
+                    if (question.type === 'radio') {
+                        const radioInput = form.querySelector(`input[name="correctAnswer"][value="${question.correctAnswer}"]`);
+                        if (radioInput) {
+                            radioInput.checked = true;
+                        }
+                    } else {
+                        question.correctAnswer.forEach(answer => {
+                            const checkboxInput = form.querySelector(`input[name="correctAnswer[]"][value="${answer}"]`);
+                            if (checkboxInput) {
+                                checkboxInput.checked = true;
+                            }
+                        });
+                    }
+                    
+                    editQuestionModal.show();
+                } catch (error) {
+                    console.error('Error fetching question details:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to load question details. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                    });
+                }
+            });
+        });
+
+        // Add option button functionality for edit modal
+        document.getElementById('editAddOption')?.addEventListener('click', () => {
+            const container = document.getElementById('editOptionsContainer');
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'input-group mb-2';
+            optionDiv.innerHTML = `
+                <input type="text" class="form-control" name="options[]" required>
+                <button type="button" class="btn btn-outline-danger remove-option">
+                    <i class="bi bi-trash"></i>
+                </button>
+            `;
+            container.appendChild(optionDiv);
+            updateEditCorrectAnswersUI();
+        });
+
+        // Remove option button functionality for edit modal
+        document.getElementById('editOptionsContainer')?.addEventListener('click', (e) => {
+            if (e.target.closest('.remove-option')) {
+                const optionDiv = e.target.closest('.input-group');
+                if (document.querySelectorAll('#editOptionsContainer .input-group').length > 2) {
+                    optionDiv.remove();
+                    updateEditCorrectAnswersUI();
+                } else {
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'A question must have at least 2 options.',
+                        icon: 'warning',
+                        confirmButtonText: 'OK',
+                    });
+                }
+            }
+        });
+
+        // Update edit correct answers UI when type changes
+        document.querySelector('#editQuestionForm select[name="type"]')?.addEventListener('change', updateEditCorrectAnswersUI);
+
+        // Update edit correct answers UI
+        function updateEditCorrectAnswersUI() {
+            const type = document.querySelector('#editQuestionForm select[name="type"]').value;
+            const container = document.getElementById('editCorrectAnswersContainer');
+            const options = Array.from(document.querySelectorAll('#editOptionsContainer input[name="options[]"]')).map(input => input.value);
+            
+            container.innerHTML = '';
+            if (type === 'radio') {
+                options.forEach(option => {
+                    container.innerHTML += `
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="correctAnswer" value="${option}" required>
+                            <label class="form-check-label">${option}</label>
+                        </div>
+                    `;
+                });
+            } else {
+                options.forEach(option => {
+                    container.innerHTML += `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="correctAnswer[]" value="${option}">
+                            <label class="form-check-label">${option}</label>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        // Update question
+        document.getElementById('updateQuestion')?.addEventListener('click', async () => {
+            const form = document.getElementById('editQuestionForm');
+            const formData = new FormData(form);
+            const type = formData.get('type');
+            
+            const questionData = {
+                text: formData.get('text'),
+                type: type,
+                category: formData.get('category'),
+                options: formData.getAll('options[]'),
+                correctAnswer: type === 'radio' ? 
+                    formData.get('correctAnswer') : 
+                    formData.getAll('correctAnswer[]')
+            };
+
+            try {
+                const response = await fetch(`/admin/questions/${formData.get('id')}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(questionData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Question has been updated successfully.',
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    throw new Error(data.message || 'Failed to update question');
+                }
+            } catch (error) {
+                console.error('Error updating question:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: error.message || 'Failed to update question. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            }
+        });
+
+        // Delete question
+        document.querySelectorAll('.delete-question').forEach(button => {
+            button.addEventListener('click', async () => {
+                const questionId = button.dataset.id;
+                
+                const result = await Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                });
+
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch(`/admin/questions/${questionId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        if (response.ok) {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: 'Question has been deleted.',
+                                icon: 'success'
+                            }).then(() => {
+                                button.closest('tr').remove();
+                            });
+                        } else {
+                            throw new Error('Failed to delete question');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting question:', error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to delete question. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                        });
+                    }
+                }
+            });
+        });
+
+        // Search and filter functionality
+        document.getElementById('searchInput')?.addEventListener('input', function(e) {
+            const searchText = e.target.value.toLowerCase();
+            filterQuestions(searchText, document.getElementById('typeFilter').value, document.getElementById('categoryFilter').value);
+        });
+
+        document.getElementById('typeFilter')?.addEventListener('change', function(e) {
+            const type = e.target.value.toLowerCase();
+            filterQuestions(document.getElementById('searchInput').value.toLowerCase(), type, document.getElementById('categoryFilter').value);
+        });
+
+        document.getElementById('categoryFilter')?.addEventListener('change', function(e) {
+            const category = e.target.value.toLowerCase();
+            filterQuestions(document.getElementById('searchInput').value.toLowerCase(), document.getElementById('typeFilter').value, category);
+        });
+
+        function filterQuestions(searchText, type, category) {
+            const rows = document.querySelectorAll('#questionsTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const rowType = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const rowCategory = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                
+                const matchesSearch = text.includes(searchText);
+                const matchesType = !type || rowType.includes(type);
+                const matchesCategory = !category || rowCategory === category;
+
+                row.style.display = matchesSearch && matchesType && matchesCategory ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+</html> 

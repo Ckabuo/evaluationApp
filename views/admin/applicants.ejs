@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applicants Management - Upperlink</title>
+    <link rel="icon" type="image/png" href="/images/upperlink-small-logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary-color: #FFFFFF;
+            --secondary-color: #f8f9fa;
+            --accent-color: #3641E1;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .sidebar {
+            background-color: var(--primary-color);
+            min-height: 100vh;
+            color: #2c3e50;
+            padding: 20px;
+            position: fixed;
+            width: 100%;
+            max-width: 280px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        
+        .sidebar .nav-link {
+            color: #2c3e50;
+            margin: 5px 0;
+            border-radius: 5px;
+            padding: 10px 15px;
+            white-space: nowrap;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: var(--secondary-color);
+            color: #2c3e50;
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .nav-links {
+            flex: 1;
+        }
+        
+        .main-content {
+            padding: 20px;
+            margin-left: 280px;
+            width: calc(100% - 280px);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            padding: 15px 20px;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            border-top: none;
+            font-weight: 600;
+        }
+
+        .search-box {
+            max-width: 300px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2a33b3;
+            border-color: #2a33b3;
+        }
+        
+        .btn-outline-primary {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                max-width: 240px;
+            }
+            .main-content {
+                margin-left: 240px;
+                width: calc(100% - 240px);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .sidebar {
+                max-width: 100%;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .stats-card {
+                margin-bottom: 15px;
+            }
+        }
+
+        /* Add hamburger menu for mobile */
+        .navbar-toggler {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background-color: var(--accent-color);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 767.98px) {
+            .navbar-toggler {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="navbar-toggler" type="button" id="sidebarToggle">
+        <i class="bi bi-list text-white"></i>
+    </button>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar" id="sidebar">
+                <div class="d-flex align-items-center mb-4">
+                    <img src="/images/logo.svg" alt="Upperlink Logo" height="40">
+                </div>
+                <div class="nav-links">
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="/admin/dashboard">
+                            <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                        </a>
+                        <a class="nav-link active" href="/admin/applicants">
+                            <i class="bi bi-people me-2"></i> Applicants
+                        </a>
+                        <a class="nav-link" href="/admin/users">
+                            <i class="bi bi-person me-2"></i> Users
+                        </a>
+                        <a class="nav-link" href="/admin/results">
+                            <i class="bi bi-graph-up me-2"></i> Results
+                        </a>
+                        <a class="nav-link" href="/admin/departments">
+                            <i class="bi bi-building me-2"></i> Departments
+                        </a>
+                        <a class="nav-link" href="/admin/questions">
+                            <i class="bi bi-question-circle me-2"></i> Questions
+                        </a>
+                        <a class="nav-link" href="/admin/quiz-settings">
+                            <i class="bi bi-gear me-2"></i> Quiz Settings
+                        </a>
+                    </nav>
+                </div>
+                <div class="mt-auto pt-4">
+                    <a class="nav-link" href="javascript:void(0)" id="logout-btn">
+                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Applicants Management</h2>
+                    <div class="user-info">
+                        <span class="me-2">Welcome, <%= currentUser?.username %></span>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="input-group search-box">
+                                    <input type="text" class="form-control" placeholder="Search applicants..." id="searchInput">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="departmentFilter">
+                                    <option value="">All Departments</option>
+                                    <% departments.forEach(dept => { %>
+                                        <option value="<%= dept.name %>"><%= dept.name %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Applicants Table -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">All Applicants</h5>
+                        <span class="badge bg-primary"><%= applicants.length %> Total</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Department</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="applicantsTableBody">
+                                    <% applicants.forEach(applicant => { %>
+                                        <tr>
+                                            <td><%= applicant.name %></td>
+                                            <td><%= applicant.email %></td>
+                                            <td><%= applicant.phoneNumber %></td>
+                                            <td><%= applicant.department %></td>
+                                            <td><%= new Date(applicant.createdAt).toLocaleDateString() %></td>
+                                            <td>
+                                                <a href="/admin/applicants/<%= applicant._id %>" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <button class="btn btn-sm btn-outline-danger delete-applicant" data-id="<%= applicant._id %>">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Pagination -->
+                        <nav aria-label="Page navigation" class="mt-4">
+                            <ul class="pagination justify-content-center" id="pagination">
+                                <!-- Pagination will be generated by JavaScript -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Add sidebar toggle functionality
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            
+            if (window.innerWidth <= 767.98 && 
+                !sidebar.contains(event.target) && 
+                !sidebarToggle.contains(event.target) && 
+                sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logout-btn')?.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch('/users/logout', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    window.location.href = '/';
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: data.message || 'Logout failed.',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: err.message || 'An error occurred while logging out.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            }
+        });
+
+        // Pagination settings
+        const itemsPerPage = 10;
+        let currentPage = 1;
+        let filteredApplicants = [...document.querySelectorAll('#applicantsTableBody tr')];
+
+        // Function to display applicants for current page
+        function displayApplicants() {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedApplicants = filteredApplicants.slice(startIndex, endIndex);
+
+            // Hide all rows
+            document.querySelectorAll('#applicantsTableBody tr').forEach(row => row.style.display = 'none');
+            
+            // Show only rows for current page
+            paginatedApplicants.forEach(row => row.style.display = '');
+            
+            updatePagination();
+        }
+
+        // Function to update pagination controls
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredApplicants.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            // Previous button
+            pagination.innerHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
+                </li>
+            `;
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                pagination.innerHTML += `
+                    <li class="page-item ${currentPage === i ? 'active' : ''}">
+                        <a class="page-link" href="#" data-page="${i}">${i}</a>
+                    </li>
+                `;
+            }
+
+            // Next button
+            pagination.innerHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
+                </li>
+            `;
+
+            // Add click event listeners to pagination links
+            document.querySelectorAll('.page-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = parseInt(e.target.dataset.page);
+                    if (page && page !== currentPage) {
+                        currentPage = page;
+                        displayApplicants();
+                    }
+                });
+            });
+        }
+
+        // Delete applicant
+        document.querySelectorAll('.delete-applicant').forEach(button => {
+            button.addEventListener('click', async () => {
+                const applicantId = button.dataset.id;
+                
+                const result = await Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                });
+
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch(`/admin/applicants/${applicantId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: data.message || 'Applicant has been deleted.',
+                                icon: 'success'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            throw new Error(data.message || 'Failed to delete applicant');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting applicant:', error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: error.message || 'Failed to delete applicant. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                        });
+                    }
+                }
+            });
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchText = e.target.value.toLowerCase();
+            filterApplicants(searchText, document.getElementById('departmentFilter').value);
+        });
+
+        // Department filter
+        document.getElementById('departmentFilter').addEventListener('change', function(e) {
+            const department = e.target.value.toLowerCase();
+            filterApplicants(document.getElementById('searchInput').value.toLowerCase(), department);
+        });
+
+        // Combined filter function
+        function filterApplicants(searchText, department) {
+            const rows = document.querySelectorAll('#applicantsTableBody tr');
+            filteredApplicants = [];
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const rowDepartment = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+                
+                const matchesSearch = text.includes(searchText);
+                const matchesDepartment = !department || rowDepartment === department;
+
+                if (matchesSearch && matchesDepartment) {
+                    filteredApplicants.push(row);
+                }
+            });
+
+            currentPage = 1; // Reset to first page when filtering
+            displayApplicants();
+        }
+
+        // Initial display
+        displayApplicants();
+    </script>
+</body>
+</html> 

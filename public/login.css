@@ -1,0 +1,226 @@
+
+#loginBack {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+    h2 {
+        font-size: 32px;
+        font-weight: 500;
+        line-height: 38.73px;
+        margin: 30px 0 20px;
+
+        @media screen and (max-width: 500px) {
+            font-size: 24px;
+            text-indent: -5px;
+        }
+    }
+
+    form {
+
+        #input {
+            display: flex;
+            gap: 35px;
+            margin-top: 5vh;
+            position: relative;
+
+            .show{
+                right: 14px;
+                bottom: 14px;
+            }
+        }
+
+        .input-field {
+            background: #f3f3f3;
+            border: transparent;
+            border-radius: 10px;
+            padding-left: 17px;
+            width: 500px;
+            height: 50px;
+            padding: 20px;
+            padding-top: 10px;
+
+            @media screen and (max-width: 500px) {
+                width: 300px;
+            }
+        }
+
+        .error {
+            border: 1px solid red;
+        /*// border: 1px solid green;*/
+        /*// background-color: #0010ff;*/
+        }
+
+        .input-field::placeholder {
+            font-size: 14px;
+            font-weight: 400;
+        }
+        #togglePassword{
+            float: right;
+            margin-left: 25px;
+            margin-top: -25px;
+            position: relative;
+            z-index: 2;
+        }
+        #rad-check {
+            margin-top: 23px;
+            margin-bottom: 26px;
+        }
+
+        #check {
+            transform: scale(1.7);
+            margin-left: 8px;
+
+            @media screen and (max-width: 500px) {
+                transform: scale(1.2);
+            }
+        }
+
+        .check-label {
+            font-size: 15px;
+            font-weight: 500;
+            margin-left: 8px;
+
+            @media screen and (max-width: 500px) {
+                font-size: 12px;
+            }
+        }
+
+        #form-btn {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+
+        #form-btn a {
+            text-decoration: none;
+            color: #000;
+        }
+
+        #btn {
+            background: #0010ff;
+            border: 0;
+            border-radius: 10px;
+            width: 500px;
+            height: 50px;
+            margin-bottom: 10px;
+            color: #fff;
+            font-size: 22px;
+
+            @media screen and (max-width: 500px) {
+                width: 300px;
+            }
+        }
+
+        /* login button label */
+        .btn-label {
+            font-size: 15px;
+            margin-left: 380px;
+            font-weight: 500;
+
+            @media screen and (max-width: 500px) {
+                font-size: 12px;
+                margin-left: 200px;
+            }
+        }
+    }
+
+    #login_ops {
+        width: 367px;
+        gap: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 35px;
+
+        @media screen and (max-width: 500px) {
+            width: 300px;
+            gap: 70px;
+        }
+    }
+
+    .login_icons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+    }
+}
+
+#header-con {
+    display: flex;
+    justify-content: center;
+}
+#header-con h2 {
+    font-size: 32px;
+    font-weight: 500;
+}
+
+@media screen and (max-width: 1800px) {
+    #text-con h2 {
+        font-size: 32px;
+    }
+
+    #text-con p {
+        font-size: 12px;
+    }
+
+    .input-field {
+        width: 450px;
+    }
+    #btn {
+        width: 450px;
+    }
+    #header-con {
+        font-size: 20px;
+    }
+
+    #check {
+        transform: scale(1.4);
+    }
+
+    .check-label {
+        font-size: 12px;
+    }
+
+    .btn-label {
+        font-size: 12px;
+        margin-left: 350px;
+    }
+}
+
+@media screen and (max-width: 1124px) {
+
+    #header-con h2 {
+        font-size: 22px;
+        font-weight: 600;
+    }
+
+    #text-con h2 {
+        font-size: 26px;
+    }
+
+    #text-con p {
+        font-size: 10px;
+    }
+    #graphic-con {
+        height: 53vh;
+    }
+
+    #header-con {
+        font-size: 16px;
+    }
+
+    #check {
+        transform: scale(1.4);
+    }
+
+    .check-label {
+        font-size: 12px;
+    }
+
+
+}

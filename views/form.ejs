@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upperlink</title>
+    <link rel="stylesheet" href="/form.css">
+    <link rel="icon" type="image/png" href="/images/upperlink-small-logo.png">
+    <script src="https://kit.fontawesome.com/0625b58520.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Check for 401 error, and redirect to login
+        window.addEventListener('fetchError', (event) => {
+            if (event.detail.status === 401) {
+                window.location.href = '/';
+            }
+        });
+    </script>
+    <link rel="icon" href="/images/upperlink-small-logo.png">
+</head>
+<body>
+<div class="navbar">
+    <div>
+        <img src="/images/logox.png" alt="Upperlink Logo">
+    </div>
+    <div id="Applicant">
+        <a href="javascript:void(0);"><i class="fa-solid fa-user"></i> Applicant</a>
+    </div>
+</div>
+<hr>
+<div class="container">
+    <div class="pricing-cards">
+        <div class="card">
+            <div class="subject">
+                <h1 id="app">Applicant Form Details</h1>
+            </div>
+            <br>
+
+            <p id="errorDisplay" class="text-danger errorMessage"></p>
+
+            <form id="applicant-form" action="/applicants/" method="POST">
+                <div class="Name">
+                    <label for="name">Full Name</label><br>
+                    <input type="text" id="name" name="fullname" placeholder="Input your full name" required>
+                    <div id="User">
+                        <svg class="userlogo" width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 21.5V19.5C20 18.4391 19.5786 17.4217 18.8284 16.6716C18.0783 15.9214 17.0609 15.5 16 15.5H8C6.93913 15.5 5.92172 15.9214 5.17157 16.6716C4.42143 17.4217 4 18.4391 4 19.5V21.5" stroke="#161A53" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 11.5C14.2091 11.5 16 9.70914 16 7.5C16 5.29086 14.2091 3.5 12 3.5C9.79086 3.5 8 5.29086 8 7.5C8 9.70914 9.79086 11.5 12 11.5Z" stroke="#161A53" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div><br><br>
+                </div>
+                <div class="Email">
+                    <label for="email">Email Address</label><br>
+                    <input type="email" id="email" name="email" placeholder="Input your email" required>
+                    <div id="envelope">
+                        <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3.33332 3.83325H16.6667C17.5833 3.83325 18.3333 4.58325 18.3333 5.49992V15.4999C18.3333 16.4166 17.5833 17.1666 16.6667 17.1666H3.33332C2.41666 17.1666 1.66666 16.4166 1.66666 15.4999V5.49992C1.66666 4.58325 2.41666 3.83325 3.33332 3.83325Z" stroke="#161A53" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M18.3333 5.5L9.99999 11.3333L1.66666 5.5" stroke="#161A53" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div><br><br>
+                </div>
+                <div class="Phone-Number">
+                    <label for="phoneNumber">Phone Number</label><br>
+                    <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Input your phone number" required>
+                    <div id="phone">
+                        <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.3333 13.5999V16.0999C17.3343 16.332 17.2867 16.5617 17.1937 16.7744C17.1008 16.987 16.9644 17.1779 16.7934 17.3348C16.6224 17.4917 16.4205 17.6112 16.2006 17.6855C15.9808 17.7599 15.7478 17.7875 15.5167 17.7666C12.9523 17.488 10.4892 16.6117 8.32498 15.2083C6.31151 13.9288 4.60443 12.2217 3.32499 10.2083C1.91663 8.03426 1.04019 5.55908 0.766652 2.98325C0.745827 2.75281 0.773214 2.52055 0.847069 2.30127C0.920923 2.08199 1.03963 1.88049 1.19562 1.7096C1.35162 1.53871 1.54149 1.40218 1.75314 1.30869C1.9648 1.2152 2.1936 1.1668 2.42499 1.16658H4.92499C5.32941 1.1626 5.72148 1.30582 6.02812 1.56953C6.33476 1.83324 6.53505 2.19946 6.59165 2.59992C6.69717 3.39997 6.89286 4.18552 7.17499 4.94158C7.2871 5.23985 7.31137 5.56401 7.24491 5.87565C7.17844 6.18729 7.02404 6.47334 6.79998 6.69992L5.74165 7.75825C6.92795 9.84454 8.65536 11.572 10.7417 12.7583L11.8 11.6999C12.0266 11.4759 12.3126 11.3215 12.6243 11.255C12.9359 11.1885 13.26 11.2128 13.5583 11.3249C14.3144 11.607 15.0999 11.8027 15.9 11.9083C16.3048 11.9654 16.6745 12.1693 16.9388 12.4812C17.203 12.7931 17.3435 13.1912 17.3333 13.5999Z" stroke="#161A53" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div><br><br>
+                </div>
+
+                <p id="Department">Select a Department</p>
+
+                <div class="select">
+                    <select id="department" name="department" required style="padding: 0.75rem; border: 1px solid rgba(0, 0, 0, 0.267); border-radius: 0.375rem; font-size: 1rem; color: #161A53; background-color: white;  background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.5rem;">
+                        <option value="">Select a department</option>
+                        <% departments.forEach(dept => { %>
+                            <option value="<%= dept.name %>"><%= dept.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit" style="margin-top: 1.5rem;">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const form = document.querySelector('form');
+    const errorDisplay = document.getElementById('errorDisplay');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const name = form.fullname.value;
+        const email = form.email.value;
+        const phoneNumber = form.phoneNumber.value;
+        const department = form.department.value;
+
+        try{
+            const response = await fetch('/applicants/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email, phoneNumber, department }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                    Swal.fire({
+                        title: 'Form Submitted!',
+                        html: `
+                        <div style="text-align: center;">
+                            <p style="color: #4B4C59; margin-bottom: 0.75rem;">The form has been successfully submitted</p>
+                            <p style="color: #4B4C59; margin-bottom: 0.75rem;">You have <b><%= settings?.timeLimit || 30 %> minutes</b> to complete <%= settings?.questionCount || 10 %> questions.</p>
+                            <p style="color: #4B4C59; margin-bottom: 0.75rem;">The quiz will auto-submit once the time elapses.</p>
+                            <p style="color: #4B4C59; margin-bottom: 1.5rem;">Click the button below to start your test.</p>
+                            <p style="color: #4B4C59; margin-bottom: 1.5rem;">All the best!</p>
+                            <a class="startButton" href="/quiz" style="display: inline-block; background-color: #3641E1; color: white; padding: 0.75rem 1.5rem; text-decoration: none; font-size: 1.125rem; border-radius: 0.375rem; margin-top: -1.25rem; width: 50%; text-align: center; border: 2px solid #3641E1; transition: background-color 0.3s ease, border-color 0.3s ease;
+                            &:hover {
+                            background-color: #290dcd;
+                            border-color: #290dcd;}
+                            ">Next</a>
+                        </div>`,
+                        icon: 'success',
+                        showConfirmButton: false,
+                        confirmButtonColor: '#3641E1',
+                        iconColor: '#3641E1',
+                        titleColor: '#090B36',
+                        customClass: {
+                            icon: 'my-swal-icon',
+                            popup: 'my-swal-popup'
+                        },
+                    }).then(() => {
+                        window.location.href = '/quiz';
+                    });
+
+            } else {
+                const errorData = await response.json();
+                errorDisplay.textContent = errorData.message || 'An error occurred';
+                if (response.status === 401){
+                    window.dispatchEvent(new CustomEvent('fetchError', { detail: { status: response.status } }));
+                }
+            }
+        } catch (error){
+            errorDisplay.textContent = 'An error occurred';
+        }
+    });
+</script>
+</body>
+</html>
