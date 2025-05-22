@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? 'https://your-render-domain.onrender.com' 
+        ? 'https://evaluation-app.onrender.com' 
         : 'http://localhost:3000',
     credentials: true
 }));
