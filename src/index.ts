@@ -13,8 +13,12 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import departmentRoutes from './routes/department';
 import morgan from 'morgan';
+import MongoStore from 'connect-mongo';
 
 dotenv.config();
+
+const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/evaluationApp';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -30,8 +34,15 @@ app.use(morgan('dev'));
 
 app.use(session({
     secret: process.env.SESSION_SECRET || 'fallback-secret',
-    resave: true,
+    resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: MONGO_URI,
+        ttl: 24 * 60 * 60 * 1000, // 24 hours
+        collectionName: 'sessions', // Optional: name of the collection for sessions
+        autoRemove: 'native', // Use MongoDB's TTL index
+        touchAfter: 24 * 60 * 60 * 1000 // 24 hours in seconds
+    }),
     cookie: { 
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
@@ -51,9 +62,6 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 app.use('/', viewRoutes);
-
-const PORT = process.env.PORT || 3000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/evaluationApp';
 
 mongoose.connect(MONGO_URI)
     .then(() => {
