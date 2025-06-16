@@ -203,7 +203,7 @@ export const getApplicantDetails = async (req: Request, res: Response) => {
         res.render('admin/applicant-details', { 
             applicant,
             result,
-            quizSettings,
+            QuizSetting,
             currentUser: req.user
         });
     } catch (error) {
